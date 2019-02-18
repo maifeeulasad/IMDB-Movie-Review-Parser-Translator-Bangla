@@ -18,9 +18,16 @@ def cleanhtml_c_(raw_html):
 translator = Translator()
 
 
+text_file = open("reviews_.txt", "w+", encoding="utf-8")
+
+count=0
+done=0
+
 #for i in range(800000,899999):
-for i in range(800000,800009):
+for i in range(800000,899999):
     link="https://www.imdb.com/title/tt"+str(i).zfill(7)+"/reviews?ref_=tt_urv"
+    count+=1
+    print("tried ",count," compelted ",done)
     try:
         nam:str
         r = requests.get(link)
@@ -42,14 +49,22 @@ for i in range(800000,800009):
                     rev_c = cleanhtml_c_(str(xx))
                
             if a[0].get_text():
-                print("-------------------------------------------------")
-                print(rev_c)
-                print(nam,"\n\n")
+                done+=1
+                #print("-------------------------------------------------")
+                #print(rev_c)
+                #print(nam,"\n\n")
                 texet=summarize(a[0].get_text())
-                print(texet,"\n\n")
+                #print(texet,"\n\n")
                 text = translator.translate(texet, src='en', dest='bn')
-                print(text.text,"\n\n")
+                #print(text.text,"\n\n")
+                combine=rev_c+"\t"+nam+"\t"+text.text+"\n"
+                print(combine)
+              
+                text_file.write(combine)
             
     except:
         pass
+
+print("completed")
+text_file.close()
 
