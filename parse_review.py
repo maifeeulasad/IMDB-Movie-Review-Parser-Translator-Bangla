@@ -8,11 +8,29 @@ from bs4 import BeautifulSoup
 
 
 from googletrans import Translator
+
+
+import re
+
+def cleanhtml_c_(raw_html):
+  cleanr = re.compile('<.*?>')
+  cleantext = re.sub(cleanr, '', raw_html)
+  if int(cleantext)>6:
+      return "pos"
+  else:
+      return "neg"
+    
+
+
 translator = Translator()
 
 
+
+
+
+
 #for i in range(800000,899999):
-for i in range(800000,800010):
+for i in range(800000,800009):
     link="https://www.imdb.com/title/tt"+str(i).zfill(7)+"/reviews?ref_=tt_urv"
     try:
         nam:str
@@ -23,10 +41,24 @@ for i in range(800000,800010):
                 nam=x.get_text()
         for td in soup.findAll( class_="lister"):
             a=td.findAll(class_="text show-more__control")
+            rat = soup.findAll(class_="rating-other-user-rating")
+            ratin:str
+            for r in rat:
+                ratin=r
+                break
+            rev_c:str
+            rrr:str
+            for xx in ratin:
+                if len(xx)==1 and len(str(xx))>13 and len(str(xx))<16:
+                    rev_c = cleanhtml_c_(str(xx))
+               
             if a[0].get_text():
+                print(rev_c)
                 print(nam,"\n\n")
                 print(a[0].get_text(),"\n\n")
                 text = translator.translate(a[0].get_text(), src='en', dest='bn')
                 print(text.text,"\n\n")
+            
     except:
         pass
+
